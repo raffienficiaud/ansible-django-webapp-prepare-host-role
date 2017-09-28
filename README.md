@@ -1,31 +1,43 @@
-Role Name
-=========
+Ansible Django Webapp Prepare Host Role
+=======================================
 
-A brief description of the role goes here.
+Installs the necessary packages and services on a host for running a Django application and their deployment scripts.
+
+This Ansible role performs the following:
+
+* it creates the deployment user and installs its public key for remote login
+* it installs the necessary packages such as `NGINX` or `Apache`, `uWSGI`, `pip`, `virtualenv` (depending on the choosen configuration)
+* it gives the deployment user the permissions to restart `uWSGI`
+
 
 Requirements
 ------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Currently works (tested) only on Ubuntu, but should be easily adaptable to any other Linux variant.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+|variable|default|meaning|
+|----------|---------|---------|
+|django_deployment_user | **required** | the user that will perform the deployments |
+|webserver| `nginx` | the type of webserver serving the application (in front of uWSGI). Supported values are `apache2` and `nginx`|
+|django_deployment_user_ssh_public_key| **required** | the ssh key of the deployment user|
+|host_additional_packages| `[]` | additional packages to install on the host, if your web application needs eg. `rabbitmq`|
+
+After deployment, the user will not be allowed to change *his* home folder content.
+
+### Notes
+This role is just a preliminary role for the `ansible-django-webapp-deployment-role` role. It can be improved in the following ways:
+
+* the SSH key can be installed later, depending on the needs, it should only be able to execute the deployment script and copy files
+  to a version store on the server.
+* the design is such that it is possible to deploy several applications on the same server
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None.
 
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
 
 License
 -------
@@ -35,4 +47,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Any comments on the Ansible, PR or bug reports are welcome from the corresponding Github project.

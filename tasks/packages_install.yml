@@ -1,0 +1,46 @@
+# Installs the necessary packages on the target host
+
+- name: install packages on the host
+  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
+  with_items:
+    - uwsgi
+    - uwsgi-plugin-python
+    - python-pip
+    - python-virtualenv
+    - acl
+    - unzip
+
+- block:
+  - name: install Apache on the host
+    apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
+    with_items:
+      - apache2
+      - libapache2-mod-uwsgi
+
+  - name: Enable Apache uWSGI module
+    apache2_module: state=present name=uwsgi
+
+  - name: Enable Apache module (mod-ssl)
+    apache2_module: state=present name=ssl
+  
+  - name: Enable Apache uWSGI module (mod-uwsgi)
+    apache2_module: state=present name=uwsgi
+
+  - name: Enable Apache module (mod-rewrite)
+    apache2_module: state=present name=rewrite
+  
+  - name: Enable Apache module (mod-proxy)
+    apache2_module: state=present name=proxy
+  
+  when: webserver=='apache2'
+
+- name: install NGinx on the host
+  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
+  with_items:
+    - nginx
+  when: webserver=='nginx'
+  
+
+- name: install additional packages on the host
+  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
+  with_items: "{{host_additional_packages}}"

@@ -1,0 +1,11 @@
+#
+# Checking that required variables are set
+#
+
+- name: Checking that required variables are set
+  fail: msg="{{ item }} is not defined"
+  when: not {{ item }}
+  with_items:
+    - webserver
+    - django_deployment_user_ssh_public_key
+    - host_additional_packages

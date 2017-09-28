@@ -1,0 +1,22 @@
+
+- name: create deployment user "{{ django_deployment_user }}"
+  action: user name="{{ django_deployment_user }}" comment="{{ django_deployment_user }}" state=present
+
+- name: adding keys for deployment user
+  authorized_key: user="{{ django_deployment_user }}" key="{{ django_deployment_user_ssh_public_key }}"
+
+- getent: 
+    database: passwd 
+    key: "{{ django_deployment_user }}" 
+    split: ':'
+  register: check_deploy_user_getent
+  when: ansible_distribution=="Ubuntu"
+
+- name: "preventing user from changing anything in its home"
+  file:
+    path: "{{ getent_passwd[django_deployment_user][4] }}"
+    state: directory
+    mode: "u+rx,g+rx"
+  when: (check_deploy_user_getent|succeeded) and (ansible_distribution=="Ubuntu")
+
+  

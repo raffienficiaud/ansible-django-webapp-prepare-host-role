@@ -1,0 +1,11 @@
+# Grants particular rights on the system for the deployment user. 
+
+# sudoers configuration for the deployment agent: this one allows the deployment user
+# to restart uWSGI
+- block:
+  - name: make the deployment agent be able to restart UWSGI
+    template: >
+      src=etc/sudoers.d/deploymentagent_services_restart.j2
+      dest=/etc/sudoers.d/{{ django_deployment_user }}
+      mode=0440
+      validate='visudo -cf %s'
