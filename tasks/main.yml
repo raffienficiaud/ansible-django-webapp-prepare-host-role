@@ -1,2 +1,19 @@
 ---
 # tasks file for ansible-django-webapp-prepare-host
+
+- include: check_vars.yml
+  tags:
+    - djangoapps:checks
+    - checks
+
+- include: create_deploy_user.yml
+  tags:
+    - django-webservices:host-configuration
+    
+- include: packages_install.yml
+  tags:
+    - django-webservices:host-configuration
+
+- include: deploy_user_permissions.yml
+  tags:
+    - django-webservices:host-configuration
