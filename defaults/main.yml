@@ -5,5 +5,8 @@
 # default webserver in front of django
 webserver: nginx
 
+# major python version
+python_major: 2
+
 # additional packages to install on the host system
 host_additional_packages: []

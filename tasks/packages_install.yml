@@ -4,11 +4,23 @@
   apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
   with_items:
     - uwsgi
+    - acl
+    - unzip
+
+- name: install python2 packages on the host
+  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
+  with_items:
     - uwsgi-plugin-python
     - python-pip
     - python-virtualenv
-    - acl
-    - unzip
+  when: python_major==2
+
+- name: install python3 packages on the host
+  apt: name="{{ item }}" update_cache=yes state=present cache_valid_time=3600
+  with_items:
+    - uwsgi-plugin-python3
+    - python3
+  when: python_major==3
 
 - block:
   - name: install Apache on the host
